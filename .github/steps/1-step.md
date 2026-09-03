@@ -91,7 +91,7 @@ Let's start up our development environment, use copilot to learn a bit about the
 
 1. We want to see our webpage running in a browser, so let's find the url and port. If it isn't visible, expand the lower panel and select the **Ports** tab.
 
-1. In the list, find port `8000` and the related link. Hover over the link and select the **Open in browser** icon.
+1. In the list, find port `8001` and the related link. Hover over the link and select the **Open in browser** icon.
 
    ![image](https://github.com/NirmalAI-Hub/skills-getting-started-with-github-copilot-np001/blob/main/.github/images/open-in-browser-icon.png?raw=true)
 

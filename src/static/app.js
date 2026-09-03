@@ -3,18 +3,54 @@ document.addEventListener("DOMContentLoaded", () => {
   const activitySelect = document.getElementById("activity");
   const signupForm = document.getElementById("signup-form");
   const messageDiv = document.getElementById("message");
+  const activityCount = document.getElementById("activity-count");
+  const participantCount = document.getElementById("participant-count");
+  const openSpots = document.getElementById("open-spots");
+  const selectedActivity = document.getElementById("selected-activity");
+  let activitiesData = {};
+
+  function updateSelectedActivity() {
+    const activity = activitiesData[activitySelect.value];
+    if (!activity) {
+      selectedActivity.classList.remove("is-visible");
+      selectedActivity.innerHTML = "";
+      return;
+    }
+
+    const spotsLeft = activity.max_participants - activity.participants.length;
+    selectedActivity.innerHTML = `
+      <strong>${activitySelect.value}</strong>
+      <span>${activity.schedule} &middot; ${spotsLeft} spots left</span>
+    `;
+    selectedActivity.classList.add("is-visible");
+  }
 
   // Function to fetch activities from API
   async function fetchActivities() {
     try {
       const response = await fetch("/activities");
       const activities = await response.json();
+      activitiesData = activities;
 
       // Clear loading message
       activitiesList.innerHTML = "";
+      activitySelect.innerHTML = '<option value="">Select from the lineup...</option>';
+
+      const activityEntries = Object.entries(activities);
+      const totalParticipants = activityEntries.reduce(
+        (total, [, details]) => total + details.participants.length,
+        0
+      );
+      const totalOpenSpots = activityEntries.reduce(
+        (total, [, details]) => total + details.max_participants - details.participants.length,
+        0
+      );
+      activityCount.textContent = String(activityEntries.length).padStart(2, "0");
+      participantCount.textContent = totalParticipants;
+      openSpots.textContent = totalOpenSpots;
 
       // Populate activities list
-      Object.entries(activities).forEach(([name, details]) => {
+      activityEntries.forEach(([name, details]) => {
         const activityCard = document.createElement("div");
         activityCard.className = "activity-card";
 
@@ -70,6 +106,9 @@ document.addEventListener("DOMContentLoaded", () => {
         option.textContent = name;
         activitySelect.appendChild(option);
       });
+
+      activitySelect.value = activitiesData["Chess Club"] ? "Chess Club" : activityEntries[0]?.[0] || "";
+      updateSelectedActivity();
     } catch (error) {
       activitiesList.innerHTML = "<p>Failed to load activities. Please try again later.</p>";
       console.error("Error fetching activities:", error);
@@ -116,6 +155,8 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Error signing up:", error);
     }
   });
+
+  activitySelect.addEventListener("change", updateSelectedActivity);
 
   // Initialize app
   fetchActivities();

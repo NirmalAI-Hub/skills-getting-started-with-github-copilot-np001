@@ -22,8 +22,8 @@ A super simple FastAPI application that allows students to view and sign up for 
    ```
 
 3. Open your browser and go to:
-   - API documentation: http://localhost:8000/docs
-   - Alternative documentation: http://localhost:8000/redoc
+   - API documentation: http://localhost:8001/docs
+   - Alternative documentation: http://localhost:8001/redoc
 
 ## API Endpoints
 
